@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MovieCard from '@/components/common/MovieCard';
 import { SearchBar } from '@/components/common/SearchBar';
@@ -11,12 +11,12 @@ import { tmdbApiConfig } from '@/shared/context/api/apiConfig';
 import { useInfiniteScroll } from '@/shared/hooks/useInfiniteScroll';
 import { useWatchlistStore } from '@/stores/watchlistStore';
 
-function HomePage() {
+function MovieListPage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const { addWatchlist } = useWatchlistStore();
+  const { isInWatchlist, addWatchlist, removeFromWatchlist } = useWatchlistStore();
 
-  // 熱門電影
+  // 熱門電影 API
   const {
     data: allMovies,
     isLoading: isPopularLoading,
@@ -29,7 +29,7 @@ function HomePage() {
     queryFn: pageParam => tmdbApiRequest(tmdbApiConfig.latestMovies(pageParam)),
   });
 
-  // 搜尋電影
+  // 搜尋電影 API
   const {
     data: searchMovies,
     isLoading: isSearchLoading,
@@ -58,15 +58,23 @@ function HomePage() {
     rootMargin: '200px',
   });
 
-  const handleMovieClick = (movie: PopularMovie) => {
-    navigate(`/movie/${movie.id}`);
-  };
+  const handleMovieClick = useCallback(
+    (movie: PopularMovie) => {
+      navigate(`/movie/${movie.id}`);
+    },
+    [navigate],
+  );
 
-  const handleAddToWatchlist = (e: React.MouseEvent, movie: PopularMovie) => {
-    // e.stopPropagation();
-    console.log(movie);
-    addWatchlist(movie);
-  };
+  const handleHeartClick = useCallback(
+    (movie: PopularMovie) => {
+      if (isInWatchlist(movie.id)) {
+        removeFromWatchlist(movie.id);
+      } else {
+        addWatchlist(movie);
+      }
+    },
+    [isInWatchlist, addWatchlist, removeFromWatchlist],
+  );
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -80,7 +88,9 @@ function HomePage() {
       </div>
 
       {/* 頁面標題 */}
-      <h1 className="mb-8 text-3xl font-bold">熱門電影</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">最新電影</h1>
+      </div>
       {/* 電影列表 */}
       <ReactQueryHandler
         status={isLoading ? 'loading' : error ? 'error' : 'success'}
@@ -95,7 +105,8 @@ function HomePage() {
                 key={`${movie.id}-${index}`}
                 movie={movie}
                 onClick={handleMovieClick}
-                onAddToWatchlist={(e: React.MouseEvent) => handleAddToWatchlist(e, movie)}
+                onHeartClick={handleHeartClick}
+                isLiked={isInWatchlist(movie.id)}
               />
             ))}
             {/* loader 放在最後 */}
@@ -110,4 +121,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default MovieListPage;

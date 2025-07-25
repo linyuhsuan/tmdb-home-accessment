@@ -1,28 +1,34 @@
 import { Ref } from 'react';
+import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
 import useAppear from '@/shared/hooks/useAppear';
 
 const MovieCard = ({
   movie,
   onClick,
-  onAddToWatchlist,
+  onHeartClick,
+  isLiked = false,
 }: {
   movie: any;
   onClick: (movie: any) => void;
-  onAddToWatchlist: (movie: any) => void;
+  onHeartClick: (movie: any) => void;
+  isLiked?: boolean;
 }) => {
   const [appearRef, isAppear] = useAppear({ once: true, rootMargin: '200px', threshold: 0.5 });
+
   const handleClick = () => {
     onClick?.(movie);
   };
-  const handleAddToWatchlist = (movie: any) => {
-    onAddToWatchlist(movie);
+  const handleHeartClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onHeartClick(movie);
   };
 
   const renderMovieCard = () => {
     return (
       <div
         className="flex overflow-hidden flex-col h-full bg-white rounded-lg border border-gray-100 shadow-md transition-all duration-300 cursor-pointer hover:shadow-lg hover:scale-105"
-        // onClick={handleClick}
+        onClick={handleClick}
       >
         {/* 海報圖片 */}
         {movie.poster_path && (
@@ -40,15 +46,12 @@ const MovieCard = ({
                 {movie.vote_average.toFixed(1)}
               </div>
               {/* 愛心 icon */}
-              <button
-                type="button"
-                className="flex justify-center items-center w-6 h-6 bg-white bg-opacity-80 rounded-full shadow hover:text-red-600"
-                onClick={() => handleAddToWatchlist(movie)}
-                aria-label="加入待看清單"
-              >
-                <svg fill="currentColor" viewBox="0 0 20 20" className="w-4 h-4 text-red-500">
-                  <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
-                </svg>
+              <button onClick={handleHeartClick} className="p-2">
+                {isLiked ? (
+                  <HeartSolid className="w-6 h-6 text-red-500 transition-colors" />
+                ) : (
+                  <HeartOutline className="w-6 h-6 text-gray-400 transition-colors" />
+                )}
               </button>
             </div>
           </div>

@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useWatchlistStore } from '@/stores/watchlistStore';
-import { WatchlistList } from '@/components/Watchlist/WatchlistList';
+import MovieCard from '@/components/common/MovieCard';
+import { PopularMovie } from '@/types/tmdb';
 
 function WatchlistPage() {
-  const { watchlist, getWatchlistCount } = useWatchlistStore();
+  const { watchlist, getWatchlistCount, removeFromWatchlist } = useWatchlistStore();
   const navigate = useNavigate();
 
   return (
@@ -15,7 +16,17 @@ function WatchlistPage() {
 
       {/* 待看清單內容 */}
       {getWatchlistCount() > 0 ? (
-        <WatchlistList watchlist={watchlist} />
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {watchlist.map((movie: PopularMovie) => (
+            <MovieCard
+              key={movie.id}
+              movie={movie}
+              onClick={(movie: PopularMovie) => navigate(`/movie/${movie.id}`)}
+              onHeartClick={(movie: PopularMovie) => removeFromWatchlist(movie.id)}
+              isLiked={true}
+            />
+          ))}
+        </div>
       ) : (
         <div className="py-16 text-center">
           <div className="mb-4 text-6xl">📽️</div>
