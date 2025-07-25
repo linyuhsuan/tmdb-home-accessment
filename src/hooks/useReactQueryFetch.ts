@@ -29,7 +29,7 @@ export const useReactQueryFetch = <
     getNextPageParam = (lastPage: TData) =>
       lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined,
     initialPageParam = 1,
-    staleTime = 5 * 60 * 1000,
+    staleTime = 0,
   } = options;
 
   const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage } =

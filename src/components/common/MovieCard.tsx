@@ -1,7 +1,7 @@
 import { Ref } from 'react';
 import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
-import useAppear from '@/hooks/useAppear';
+import { useAppear } from '@/hooks/useAppear';
 
 const MovieCard = ({
   movie,
@@ -41,7 +41,7 @@ const MovieCard = ({
               className="object-cover w-full h-full"
             />
             {/* 評分徽章 */}
-            <div className="flex absolute top-2 right-2 z-10 gap-1 items-center">
+            <div className="flex absolute top-2 right-2 gap-1 items-center z-9">
               <div className="flex justify-center items-center w-6 h-6 text-xs font-bold text-white bg-black bg-opacity-80 rounded-full">
                 {movie.vote_average.toFixed(1)}
               </div>

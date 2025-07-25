@@ -39,7 +39,6 @@ export function useInfiniteScroll({
       entries => {
         // 當 loader 元素進入視窗時觸發載入
         if (entries[0].isIntersecting) {
-          console.log('fetchNextPage');
           fetchNextPage();
         }
       },
