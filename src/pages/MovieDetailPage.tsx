@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { tmdbApiRequest } from '@/shared/context/api/apiService';
-import { tmdbApiConfig } from '@/shared/context/api/apiConfig';
+import { tmdbApiRequest } from '@/lib/api/apiService';
+import { tmdbApiConfig } from '@/lib/api/apiConfig';
 import MovieDetail from '@/components/MovieDetail';
 import ReactQueryHandler from '@/components/common/ReactQueryHandler';
 import type { MovieDetail as MovieDetailType, Credits, Videos, Reviews } from '@/types/tmdb';

@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import MovieCard from '@/components/common/MovieCard';
 import { SearchBar } from '@/components/common/SearchBar';
 import ReactQueryHandler from '@/components/common/ReactQueryHandler';
-import { useReactQueryFetch } from '@/shared/hooks/useReactQueryFetch';
+import { useReactQueryFetch } from '@/hooks/useReactQueryFetch';
 import { PopularMovie } from '@/types/tmdb';
 import type { MediaListResponse } from '@/types/tmdb';
-import { tmdbApiRequest } from '@/shared/context/api/apiService';
-import { tmdbApiConfig } from '@/shared/context/api/apiConfig';
-import { useInfiniteScroll } from '@/shared/hooks/useInfiniteScroll';
+import { tmdbApiRequest } from '@/lib/api/apiService';
+import { tmdbApiConfig } from '@/lib/api/apiConfig';
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { useWatchlistStore } from '@/stores/watchlistStore';
 
 function MovieListPage() {
