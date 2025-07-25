@@ -42,7 +42,7 @@ const Header = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-black-600">
-            Movie App
+            Movie
           </Link>
 
           {/* 導航選單 */}

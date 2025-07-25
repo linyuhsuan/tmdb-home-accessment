@@ -40,7 +40,6 @@ function MovieListPage() {
   } = useReactQueryFetch<MediaListResponse, PopularMovie>({
     queryKey: searchQuery ? ['search-movies', searchQuery] : ['search-movies', ''],
     queryFn: pageParam => tmdbApiRequest(tmdbApiConfig.searchMovies(searchQuery, pageParam)),
-    enabled: !!searchQuery,
   });
 
   // 共用列表狀態

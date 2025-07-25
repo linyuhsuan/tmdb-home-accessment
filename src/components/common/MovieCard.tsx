@@ -1,7 +1,7 @@
 import { Ref } from 'react';
 import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
-import useAppear from '@/shared/hooks/useAppear';
+import useAppear from '@/hooks/useAppear';
 
 const MovieCard = ({
   movie,

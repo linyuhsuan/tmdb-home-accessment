@@ -27,7 +27,6 @@ function MovieDetailPage() {
 
       return { movie, credits, videos, reviews };
     },
-    enabled: !!id,
   });
 
   const handleBack = () => {

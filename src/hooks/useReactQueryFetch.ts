@@ -6,7 +6,6 @@ export interface InfiniteScrollOptions<TData, TError> {
   getNextPageParam?: (lastPage: TData) => number | undefined;
   initialPageParam?: number;
   staleTime?: number;
-  enabled?: boolean;
 }
 
 export interface InfiniteScrollResult<TData, TItem = unknown> {
@@ -31,7 +30,6 @@ export const useReactQueryFetch = <
       lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined,
     initialPageParam = 1,
     staleTime = 5 * 60 * 1000,
-    enabled = true,
   } = options;
 
   const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -41,7 +39,6 @@ export const useReactQueryFetch = <
       getNextPageParam,
       initialPageParam,
       staleTime,
-      enabled,
     });
 
   // 扁平化所有頁面的數據
