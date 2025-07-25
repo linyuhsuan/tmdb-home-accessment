@@ -1,10 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 
-export default function useAppear(params: {
-  once?: boolean;
-  threshold?: number;
-  rootMargin?: string;
-}) {
+// lazy load
+export const useAppear = (params: { once?: boolean; threshold?: number; rootMargin?: string }) => {
   const { once, threshold, rootMargin } = params;
   const ref = useRef<HTMLDivElement | null>(null);
   const [isAppear, setIsAppear] = useState(false);
@@ -28,4 +25,4 @@ export default function useAppear(params: {
   }, [once, threshold, rootMargin]);
 
   return [ref, isAppear];
-}
+};
