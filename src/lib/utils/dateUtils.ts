@@ -18,3 +18,15 @@ export const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
   return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
 };
+
+/**
+ * 格式化日期為月/日格式
+ * @param dateString ISO 日期字串
+ * @returns 格式化後的月/日字串，例如 "12/25"
+ */
+export const formatMonthDay = (dateString: string): string => {
+  const date = new Date(dateString);
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return `${month}/${day}`;
+};

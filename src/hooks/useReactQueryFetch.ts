@@ -3,9 +3,10 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 export interface InfiniteScrollOptions<TData, TError> {
   queryKey: string[];
   queryFn: (pageParam: number) => Promise<TData>;
-  getNextPageParam?: (lastPage: TData) => number | undefined;
+  getNextPageParam?: (lastPage: TData, allPages: TData[]) => number | undefined;
   initialPageParam?: number;
   staleTime?: number;
+  enabled?: boolean;
 }
 
 export interface InfiniteScrollResult<TData, TItem = unknown> {
@@ -15,6 +16,7 @@ export interface InfiniteScrollResult<TData, TItem = unknown> {
   fetchNextPage: () => Promise<unknown>;
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
+  isFetching: boolean;
 }
 
 export const useReactQueryFetch = <
@@ -30,16 +32,31 @@ export const useReactQueryFetch = <
       lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined,
     initialPageParam = 1,
     staleTime = 0,
+    enabled = true,
   } = options;
 
-  const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey,
-      queryFn: ({ pageParam = initialPageParam }) => queryFn(pageParam as number),
-      getNextPageParam,
-      initialPageParam,
-      staleTime,
-    });
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetching,
+    ...result
+  } = useInfiniteQuery({
+    queryKey,
+    queryFn: ({ pageParam = initialPageParam }) => queryFn(pageParam as number),
+    getNextPageParam: lastPage => {
+      if (lastPage.page < lastPage.total_pages) {
+        return lastPage.page + 1;
+      }
+      return undefined;
+    },
+    initialPageParam,
+    staleTime,
+    enabled,
+  });
 
   // 扁平化所有頁面的數據
   const flattenedData = (data?.pages.flatMap(page => page.results) || []) as TItem[];
@@ -51,5 +68,6 @@ export const useReactQueryFetch = <
     fetchNextPage,
     hasNextPage: hasNextPage || false,
     isFetchingNextPage,
+    isFetching,
   };
 };

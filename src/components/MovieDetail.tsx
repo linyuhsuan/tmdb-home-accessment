@@ -183,7 +183,7 @@ const MovieDetail = ({ movie, credits, videos, reviews }: MovieDetailProps) => {
       <div className="px-4 py-8 w-full">
         {/* 電影海報和基本信息 */}
         <div className="overflow-hidden mb-8 bg-gray-800 rounded-lg shadow-md">
-          <div className="relative h-96 md:h-[500px]">
+          <div className="relative h-64 sm:h-80 md:h-96 lg:h-[500px]">
             {movie.backdrop_path && (
               <img
                 loading="lazy"
@@ -195,80 +195,86 @@ const MovieDetail = ({ movie, credits, videos, reviews }: MovieDetailProps) => {
             <div className="absolute inset-0 bg-gradient-to-r to-transparent from-gray-900/80 via-gray-800/60"></div>
 
             {/* 內容區域 */}
-            <div className="flex absolute inset-0 items-center px-8">
-              {/* 左側電影海報 */}
-              <div className="flex-shrink-0">
+            <div className="flex absolute inset-0 flex-col justify-center px-4 sm:px-6 md:px-8 lg:flex-row lg:items-center">
+              {/* 電影海報 */}
+              <div className="flex justify-center mb-4 lg:mb-0 lg:flex-shrink-0">
                 {movie.poster_path && (
                   <img
                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                     alt={movie.title}
-                    className="object-cover w-48 h-72 rounded-lg shadow-2xl"
+                    className="object-cover w-32 h-48 rounded-lg shadow-2xl sm:w-40 sm:h-60 md:w-48 md:h-72"
                   />
                 )}
               </div>
 
-              {/* 右側電影信息 */}
-              <div className="flex-1 ml-8 text-white">
+              {/* 電影信息 */}
+              <div className="flex-1 text-white lg:ml-8">
                 {/* 電影標題 */}
-                <h1 className="mb-4 text-4xl font-bold">
+                <h1 className="mb-2 text-xl font-bold sm:mb-4 sm:text-2xl md:text-3xl lg:text-4xl">
                   {movie.title} ({new Date(movie.release_date).getFullYear()})
                 </h1>
 
                 {/* 電影詳情 */}
-                <p className="mb-6 text-sm">
+                <p className="mb-4 text-xs sm:mb-6 sm:text-sm">
                   {formatDate(movie.release_date)} {formatRuntime(movie.runtime)}{' '}
                   {movie.genres?.map(g => g.name).join(', ')}
                 </p>
 
                 {/* 評分和按鈕 */}
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center p-3 space-x-2 bg-gray-700 rounded-full transition-colors hover:bg-gray-600">
-                    <div className="flex justify-center items-center w-8 h-8 text-sm font-bold text-yellow-500 bg-gray-800 rounded-full border border-yellow-500">
+                <div className="flex flex-wrap gap-2 mb-4 sm:gap-3 md:gap-4 sm:mb-6">
+                  <div className="flex items-center p-3 space-x-1 bg-gray-700 rounded-full transition-colors sm:p-3 sm:space-x-2 hover:bg-gray-600">
+                    <div className="flex justify-center items-center w-6 h-6 text-xs font-bold text-yellow-500 bg-gray-800 rounded-full border border-yellow-500 sm:w-8 sm:h-8 sm:text-sm">
                       {movie.vote_average.toFixed(1)}
                     </div>
-                    <span className="text-sm text-white">用戶評分</span>
+                    <span className="text-xs text-white sm:text-sm">用戶評分</span>
                   </div>
 
                   <div
                     onClick={() =>
                       isMovieInWatchlist ? removeFromWatchlist(movie.id) : addWatchlist(movie)
                     }
-                    className={`flex items-center p-3 space-x-2 rounded-full transition-colors ${
+                    className={`flex items-center p-2 sm:p-3 space-x-1 sm:space-x-2 rounded-full transition-colors ${
                       isMovieInWatchlist
                         ? 'bg-gray-700 hover:bg-gray-600'
                         : 'bg-gray-700 hover:bg-gray-600'
                     }`}
                   >
                     {isMovieInWatchlist ? (
-                      <HeartSolid className="w-5 h-5 text-red-500" />
+                      <HeartSolid className="w-4 h-4 text-red-500 sm:w-5 sm:h-5" />
                     ) : (
-                      <HeartOutline className="w-5 h-5 text-white" />
+                      <HeartOutline className="w-4 h-4 text-white sm:w-5 sm:h-5" />
                     )}
-                    <span className="text-sm text-white">
+                    <span className="text-xs text-white sm:text-sm">
                       {isMovieInWatchlist ? '已收藏' : '收藏'}
                     </span>
                   </div>
 
-                  <div className="flex items-center p-3 space-x-2 bg-gray-700 rounded-full transition-colors hover:bg-gray-600">
-                    <span className="text-sm text-white">▶</span>
-                    <span className="text-sm text-white">播放預告片</span>
+                  <div className="flex items-center p-2 space-x-1 bg-gray-700 rounded-full transition-colors sm:p-3 sm:space-x-2 hover:bg-gray-600">
+                    <span className="text-xs text-white sm:text-sm">▶</span>
+                    <span className="text-xs text-white sm:text-sm">播放預告片</span>
                   </div>
                 </div>
 
                 {/* 概覽 */}
-                <div className="mb-6">
-                  <h4 className="mb-2 font-medium text-gray-300">概覽</h4>
-                  <p className="text-gray-400">{movie.overview}</p>
+                <div className="mb-4 sm:mb-6">
+                  <h4 className="mb-1 text-sm font-medium text-gray-300 sm:mb-2 sm:text-base">
+                    概覽
+                  </h4>
+                  <p className="text-xs text-gray-400 sm:text-sm md:text-base line-clamp-3 sm:line-clamp-none">
+                    {movie.overview}
+                  </p>
                 </div>
 
-                {/* 導演 */}
-                <div className="flex flex-wrap gap-4 w-full">
+                {/* 導演和編劇 */}
+                <div className="flex flex-col gap-3 w-full sm:gap-4 lg:flex-row">
                   {getDirectors().length > 0 && (
                     <div className="flex-1">
-                      <h4 className="mb-2 font-medium text-gray-300">導演</h4>
-                      <div className="flex flex-wrap gap-2">
+                      <h4 className="mb-1 text-sm font-medium text-gray-300 sm:mb-2 sm:text-base">
+                        導演
+                      </h4>
+                      <div className="flex flex-wrap gap-1 sm:gap-2">
                         {getDirectors().map((director, index) => (
-                          <span key={director.id} className="text-white">
+                          <span key={director.id} className="text-xs text-white sm:text-sm">
                             {director.name}
                             {index < getDirectors().length - 1 ? '、' : ''}
                           </span>
@@ -280,12 +286,14 @@ const MovieDetail = ({ movie, credits, videos, reviews }: MovieDetailProps) => {
                   {/* 編劇 */}
                   {getWriters().length > 0 && (
                     <div className="flex-1">
-                      <h4 className="mb-2 font-medium text-gray-300">編劇</h4>
-                      <div className="flex flex-wrap gap-2">
+                      <h4 className="mb-1 text-sm font-medium text-gray-300 sm:mb-2 sm:text-base">
+                        編劇
+                      </h4>
+                      <div className="flex flex-wrap gap-1 sm:gap-2">
                         {getWriters()
                           .slice(0, 3)
                           .map((writer, index) => (
-                            <span key={writer.id} className="text-white">
+                            <span key={writer.id} className="text-xs text-white sm:text-sm">
                               {writer.name}
                               {index < Math.min(getWriters().length, 3) - 1 ? '、' : ''}
                             </span>

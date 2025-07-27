@@ -1,56 +1,60 @@
-import { useRef, useEffect } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 interface UseInfiniteScrollOptions {
+  onLoadMore: () => void;
   hasNextPage: boolean;
-  isFetchingNextPage: boolean;
-  fetchNextPage: () => Promise<unknown>;
-  rootMargin?: string;
+  isLoading: boolean;
+  hasData?: boolean; // 是否有初始數據
+  threshold?: number; // 距離底部多少像素時觸發加載
+  rootMargin?: string; // Intersection Observer 的 rootMargin
 }
 
-/**
- * 無限滾動 Hook
- *
- * 使用 Intersection Observer API 實現無限滾動功能。
- * 當指定的元素進入視窗時，自動觸發載入下一頁的函數。
- *
- * @param options - 無限滾動的配置選項
- * @param options.hasNextPage - 是否有下一頁資料
- * @param options.isFetchingNextPage - 是否正在載入下一頁
- * @param options.fetchNextPage - 載入下一頁的函數
- * @param options.rootMargin - Intersection Observer 的 rootMargin，預設為 '200px'
- *
- * @returns 包含 loaderRef 的物件，用於綁定到觸發元素
- */
+interface UseInfiniteScrollReturn {
+  loadMoreRef: React.RefObject<HTMLDivElement | null>;
+}
 
-export function useInfiniteScroll({
+export const useInfiniteScroll = ({
+  onLoadMore,
   hasNextPage,
-  isFetchingNextPage,
-  fetchNextPage,
+  isLoading,
+  hasData = true,
+  threshold = 0.1,
   rootMargin = '200px',
-}: UseInfiniteScrollOptions) {
-  const loaderRef = useRef<HTMLDivElement | null>(null);
+}: UseInfiniteScrollOptions): UseInfiniteScrollReturn => {
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  // 使用 useCallback 包裹 IntersectionObserver 的回調函數，確保其穩定性
+  const observerCallback = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const target = entries[0];
+      // 只有當目標元素進入視窗、有下一頁且目前沒有正在載入時才觸發載入
+      if (target.isIntersecting && hasNextPage && !isLoading && hasData) {
+        console.log('IntersectionObserver triggered, fetching next page...'); // 除錯日誌
+        onLoadMore();
+      }
+    },
+    [onLoadMore, hasNextPage, isLoading, hasData], // 回調函數的依賴項
+  );
 
   useEffect(() => {
-    // 如果沒有下一頁或正在載入，則不設置 observer
-    if (!hasNextPage || isFetchingNextPage) return;
+    const currentRef = loadMoreRef.current;
+    if (!currentRef) return;
 
-    // 創建 Intersection Observer
-    const observer = new IntersectionObserver(
-      entries => {
-        // 當 loader 元素進入視窗時觸發載入
-        if (entries[0].isIntersecting) {
-          fetchNextPage();
-        }
-      },
-      { rootMargin },
-    );
+    const observer = new IntersectionObserver(observerCallback, {
+      rootMargin, // 在元素進入視窗底部指定像素時觸發
+      threshold,
+    });
 
-    // 開始觀察 loader 元素
-    if (loaderRef.current) observer.observe(loaderRef.current);
+    observer.observe(currentRef);
 
-    // 清理函數：停止觀察並斷開連接
-    return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage, rootMargin]);
+    // 清理函數：組件卸載時取消觀察並斷開連接
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+      observer.disconnect(); // 確保 observer 完全斷開連接
+    };
+  }, [observerCallback, rootMargin, threshold]); // useEffect 現在只依賴於穩定的 observerCallback
 
-  return { loaderRef };
-}
+  return { loadMoreRef };
+};
