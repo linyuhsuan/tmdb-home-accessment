@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { tmdbApiRequest } from '@/lib/api/apiService';
 import { tmdbApiConfig } from '@/lib/api/apiConfig';
@@ -8,7 +8,6 @@ import type { MovieDetail as MovieDetailType, Credits, Videos, Reviews } from '@
 
 function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
 
   // 獲取電影詳情、演員陣容、預告片、評論
   const {
@@ -29,10 +28,6 @@ function MovieDetailPage() {
     },
   });
 
-  const handleBack = () => {
-    navigate(-1);
-  };
-
   return (
     <ReactQueryHandler
       status={isLoading ? 'loading' : error ? 'error' : 'success'}
@@ -46,7 +41,6 @@ function MovieDetailPage() {
           credits={movieData.credits}
           videos={movieData.videos}
           reviews={movieData.reviews}
-          onBack={handleBack}
         />
       )}
     </ReactQueryHandler>

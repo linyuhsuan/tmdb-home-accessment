@@ -63,9 +63,6 @@ const MovieCard = ({
             {movie.title}
           </h3>
           <p className="mb-2 text-xs text-gray-500">{movie.release_date}</p>
-          <p className="flex-1 text-xs leading-relaxed text-gray-600 line-clamp-2">
-            {movie.overview || '暫無劇情簡介'}
-          </p>
         </div>
       </div>
     );

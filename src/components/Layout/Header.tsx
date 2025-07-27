@@ -28,7 +28,11 @@ const Header = () => {
   const menuItems: MenuItem[] = [
     {
       path: '/',
-      label: '最新電影',
+      label: '電影總覽',
+    },
+    {
+      path: '/movie-list',
+      label: '電影分類',
     },
     {
       path: '/watchlist',

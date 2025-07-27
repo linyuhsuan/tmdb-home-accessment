@@ -4,7 +4,7 @@ import { PopularMovie } from '@/types/tmdb';
 
 interface WatchlistStore {
   watchlist: PopularMovie[];
-  addWatchlist: (movie: PopularMovie) => void;
+  addWatchlist: (movie: any) => void;
   removeFromWatchlist: (movieId: number) => void;
   isInWatchlist: (movieId: number) => boolean;
   clearWatchlist: () => void;

@@ -5,9 +5,7 @@ import App from '@/App';
 import ReactQueryProvider from '@/components/common/ReactQueryProvider';
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <ReactQueryProvider>
-      <App />
-    </ReactQueryProvider>
-  </StrictMode>,
+  <ReactQueryProvider>
+    <App />
+  </ReactQueryProvider>,
 );
