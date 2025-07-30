@@ -24,6 +24,9 @@ jobs:
 
       - name: Build project
         run: npm run build
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_API_TOKEN: ${{ secrets.VITE_API_TOKEN }}
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v4
@@ -48,4 +51,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.DEPLOY_SECRET }}
-          publish_dir: ./dist
+          publish_dir: ./dist 
