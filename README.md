@@ -31,8 +31,8 @@
 - **圖示**：Heroicons
 - **API**：TMDB (The Movie Database)
 - **Lint/格式化**：ESLint、Prettier
-
----
+- **測試**：Vitest + Testing Library
+- **Git Hooks**：Husky + lint-staged
 
 ## 專案結構
 
@@ -40,62 +40,73 @@
 tmdb-home-accessment/
 ├── public/                # 靜態資源
 ├── src/
-│   ├── assets/            # 靜態圖片、SVG
 │   ├── components/
 │   │   ├── common/        # 共用元件
 │   │   │   ├── MovieCard.tsx
-│   │   │   ├── PersonCard.tsx
-│   │   │   ├── BackButton.tsx
+│   │   │   ├── MovieDetail.tsx
+│   │   │   ├── MovieFilter.tsx
+│   │   │   ├── MovieFilterModal.tsx
 │   │   │   ├── ReactQueryHandler.tsx
+│   │   │   ├── ReactQueryProvider.tsx
 │   │   │   ├── SearchBar.tsx
-│   │   │   └── ReactQueryProvider.tsx
+│   │   │   ├── TabNavigation.tsx
+│   │   │   ├── TimelineScroll.tsx
+│   │   │   └── WheelModal.tsx
 │   │   └── Layout/        # 版型元件
 │   │       ├── Header.tsx
 │   │       └── Layout.tsx
 │   ├── hooks/             # 自訂 React hooks
-│   │   ├── useReactQueryFetch.ts
+│   │   ├── useAppear.ts
+│   │   ├── useHorizontalScroll.ts
 │   │   ├── useInfiniteScroll.ts
-│   │   └── useAppear.ts
+│   │   ├── useInfiniteScrollFetch.ts
+│   │   ├── useMovieSort.ts
+│   │   ├── useReactQueryFetch.ts
+│   │   └── useSearchKeys.ts
 │   ├── lib/
-│   │   └── api/           # API 設定與服務
-│   │       ├── apiConfig.ts
-│   │       └── apiService.ts
+│   │   ├── api/           # API 設定與服務
+│   │   │   ├── apiConfig.ts
+│   │   │   └── apiService.ts
+│   │   ├── enum/          # 列舉定義
+│   │   │   └── language.ts
+│   │   └── utils/         # 工具函數
+│   │       └── dateUtils.ts
 │   ├── pages/             # 主要頁面
-│   │   ├── MovieListPage.tsx
+│   │   ├── MovieCategoriesPage.tsx
 │   │   ├── MovieDetailPage.tsx
+│   │   ├── MovieListPage.tsx
 │   │   └── WatchlistPage.tsx
 │   ├── stores/            # 狀態管理（Zustand）
 │   │   └── watchlistStore.ts
 │   ├── types/             # TypeScript 型別定義
 │   │   └── tmdb.ts
+│   ├── assets/            # 靜態資源
+│   │   └── react.svg
+│   ├── shared/            # 共用資源
 │   ├── test/              # 測試設定
+│   │   └── setup.ts
+│   ├── router/            # 路由設定
+│   │   └── index.tsx
 │   ├── App.tsx            # 入口元件
+│   ├── App.css            # 應用樣式
 │   ├── main.tsx           # 入口檔案
 │   ├── index.css          # 全域樣式
-│   └── router/            # 路由設定
+│   └── vite-env.d.ts      # Vite 環境型別
+├── __tests__/             # 測試檔案
+│   ├── hooks/             # Hooks 測試
+│   ├── integration/       # 整合測試
+│   ├── pages/             # 頁面測試
+│   └── utils/             # 測試工具
 ├── package.json
+├── package-lock.json
 ├── vite.config.ts
+├── vitest.config.ts
 ├── tailwind.config.js
-├── README.md
-└── ...（其他設定檔）
+├── postcss.config.js
+├── tsconfig.json
+├── tsconfig.tsbuildinfo
+├── eslint.config.ts
+├── .prettierrc
+├── .gitignore
+├── index.html
 ```
-
----
-
-## 安裝與啟動
-
-1. **安裝依賴**
-   ```bash
-   npm install
-   ```
-
-2. **本地開發**
-   ```bash
-   npm run dev
-   ```
-
----
-
-## 其他說明
-
-- **API 來源**：[TMDB 官方文件](https://developers.themoviedb.org/3)
