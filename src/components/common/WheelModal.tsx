@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
 import { useWatchlistStore } from '@/stores/watchlistStore';
+import { useEffect, useRef, useState } from 'react';
 
 interface WheelModalProps {
   isOpen: boolean;
@@ -9,8 +9,6 @@ interface WheelModalProps {
 }
 
 const WheelModal: React.FC<WheelModalProps> = ({ isOpen, onClose, onSpin, onMovieSelect }) => {
-  const items = ['7️⃣', '❌', '🍓', '🍋', '🍉', '🍒', '💵', '🍊', '🍎'];
-
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<any>(null);
   const [showMovieResult, setShowMovieResult] = useState(false);
@@ -19,8 +17,42 @@ const WheelModal: React.FC<WheelModalProps> = ({ isOpen, onClose, onSpin, onMovi
   // 獲取待看清單
   const { watchlist } = useWatchlistStore();
 
-  // 打亂陣列函數（增加成功機率）
-  const shuffle = (arr: string[]) => {
+  // 組件掛載時初始化
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => init(true), 100);
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  // 如果待看清單為空，顯示提示
+  if (watchlist.length === 0) {
+    return (
+      <div className="flex fixed inset-0 z-50 justify-center items-center">
+        <div className="absolute inset-0 bg-black bg-opacity-50" onClick={onClose} />
+        <div className="flex relative z-10 flex-col justify-center items-center p-8 mx-4 w-full max-w-md bg-gray-800 rounded-2xl">
+          <div className="flex justify-between items-center mb-8 w-full">
+            <h2 className="text-2xl font-bold text-white">電影轉盤</h2>
+            <button
+              onClick={onClose}
+              className="p-2 bg-gray-700 rounded-full transition-colors hover:bg-gray-600"
+            >
+              <span className="text-white">✕</span>
+            </button>
+          </div>
+          <div className="text-center text-white">
+            <div className="mb-4 text-6xl">📽️</div>
+            <h3 className="mb-2 text-xl font-semibold">你的待看清單是空的</h3>
+            <p className="text-gray-300">先加入一些電影到待看清單，再來使用轉盤功能吧！</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 打亂陣列函數
+  const shuffle = (arr: any[]) => {
     const shuffled = [...arr];
     let m = shuffled.length;
     while (m) {
@@ -30,23 +62,13 @@ const WheelModal: React.FC<WheelModalProps> = ({ isOpen, onClose, onSpin, onMovi
     return shuffled;
   };
 
-  // 增加成功機率的符號選擇
-  const getWinningSymbol = () => {
-    // 70% 機率返回熱門符號，30% 機率隨機
-    if (Math.random() < 0.7) {
-      const popularSymbols = ['🍒', '🍋', '7️⃣', '💵', '🍊'];
-      return popularSymbols[Math.floor(Math.random() * popularSymbols.length)];
-    }
-    return items[Math.floor(Math.random() * items.length)];
-  };
-
   // 初始化門
   const initDoor = (
     doorIndex: number,
     firstInit = true,
     groups = 1,
     duration = 1,
-    targetSymbol: string | null = null,
+    targetMovie: any = null,
   ) => {
     const door = doorsRef.current[doorIndex];
     if (!door) return;
@@ -55,20 +77,19 @@ const WheelModal: React.FC<WheelModalProps> = ({ isOpen, onClose, onSpin, onMovi
     if (!boxes) return;
 
     const boxesClone = boxes.cloneNode(false) as HTMLElement;
-    const pool = ['❓'];
+    const pool = [{ id: 'question', title: '❓', poster_path: null }];
 
     if (!firstInit) {
       const arr = [];
       for (let n = 0; n < (groups > 0 ? groups : 1); n++) {
-        arr.push(...items);
+        arr.push(...watchlist);
       }
 
-      // 如果有目標符號，確保它在最終位置
-      if (targetSymbol) {
-        // 移除目標符號避免重複
-        const filteredArr = arr.filter(item => item !== targetSymbol);
+      // 如果有目標電影，確保它在最終位置
+      if (targetMovie) {
+        const filteredArr = arr.filter(movie => movie.id !== targetMovie.id);
         pool.push(...shuffle(filteredArr));
-        pool.push(targetSymbol); // 確保目標符號在最後（最終顯示位置）
+        pool.push(targetMovie); // 確保目標電影在最後
       } else {
         pool.push(...shuffle(arr));
       }
@@ -81,8 +102,24 @@ const WheelModal: React.FC<WheelModalProps> = ({ isOpen, onClose, onSpin, onMovi
 
     for (let i = pool.length - 1; i >= 0; i--) {
       const box = document.createElement('div');
-      box.className = 'flex justify-center items-center w-24 h-36 text-5xl box';
-      box.textContent = pool[i];
+      box.className =
+        'flex flex-col justify-center items-center w-24 h-36 text-xs bg-gray-200 rounded box';
+
+      const movie = pool[i];
+      if (movie.id === 'question') {
+        box.innerHTML = '<div class="text-2xl">❓</div>';
+      } else {
+        box.innerHTML = `
+          <div class="mb-1 w-16 h-20">
+            ${
+              movie.poster_path
+                ? `<img src="https://image.tmdb.org/t/p/w92${movie.poster_path}" alt="${movie.title}" class="object-cover w-full h-full rounded" />`
+                : '<div class="flex justify-center items-center w-full h-full text-xs bg-gray-300 rounded">📽️</div>'
+            }
+          </div>
+          <div class="px-1 text-xs text-center line-clamp-2">${movie.title}</div>
+        `;
+      }
       boxesClone.appendChild(box);
     }
 
@@ -127,7 +164,7 @@ const WheelModal: React.FC<WheelModalProps> = ({ isOpen, onClose, onSpin, onMovi
     }
   };
 
-  // 旋轉函數（增加成功機率）
+  // 旋轉函數
   const spin = async () => {
     if (isSpinning) return;
 
@@ -137,39 +174,37 @@ const WheelModal: React.FC<WheelModalProps> = ({ isOpen, onClose, onSpin, onMovi
 
     // 決定是否要獲勝（60% 機率獲勝）
     const shouldWin = Math.random() < 0.6;
-    let targetSymbol = null;
+    let targetMovie = null;
 
     if (shouldWin) {
-      targetSymbol = getWinningSymbol();
+      targetMovie = watchlist[Math.floor(Math.random() * watchlist.length)];
     }
 
     // 初始化每個門的旋轉
     const spinPromises = [];
     for (let i = 0; i < 3; i++) {
-      const doorTargetSymbol = shouldWin ? targetSymbol : null;
-      spinPromises.push(initDoor(i, false, 1, 1 + i * 0.5, doorTargetSymbol));
+      const doorTargetMovie = shouldWin ? targetMovie : null;
+      spinPromises.push(initDoor(i, false, 1, 1 + i * 0.5, doorTargetMovie));
     }
 
     // 等待所有動畫完成
     await Promise.all(spinPromises);
     setIsSpinning(false);
 
-    // 檢查是否三個符號相同且有待看清單
-    if (shouldWin && targetSymbol && watchlist.length > 0) {
-      // 從待看清單中隨機選擇一部電影
-      const randomMovie = watchlist[Math.floor(Math.random() * watchlist.length)];
-      setSelectedMovie(randomMovie);
+    // 檢查是否獲勝
+    if (shouldWin && targetMovie) {
+      setSelectedMovie(targetMovie);
       setShowMovieResult(true);
 
       // 等待3秒後調用電影選擇回調
       setTimeout(() => {
-        onMovieSelect?.(randomMovie);
+        onMovieSelect?.(targetMovie);
       }, 3000);
     }
 
     // 調用 onSpin 回調
-    if (onSpin && targetSymbol) {
-      onSpin(targetSymbol);
+    if (onSpin && targetMovie) {
+      onSpin(targetMovie.title);
     }
   };
 
@@ -181,13 +216,6 @@ const WheelModal: React.FC<WheelModalProps> = ({ isOpen, onClose, onSpin, onMovi
     setSelectedMovie(null);
   };
 
-  // 組件掛載時初始化
-  useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => init(true), 100);
-    }
-  }, [isOpen]);
-
   if (!isOpen) return null;
 
   return (
@@ -195,11 +223,11 @@ const WheelModal: React.FC<WheelModalProps> = ({ isOpen, onClose, onSpin, onMovi
       {/* 遮罩 */}
       <div className="absolute inset-0 bg-black bg-opacity-50" onClick={onClose} />
 
-      {/* 拉霸機容器 */}
+      {/* 轉盤容器 */}
       <div className="flex relative z-10 flex-col justify-center items-center p-8 mx-4 w-full max-w-md bg-gray-800 rounded-2xl">
         {/* 標題 */}
         <div className="flex justify-between items-center mb-8 w-full">
-          <h2 className="text-2xl font-bold text-white">拉霸機</h2>
+          <h2 className="text-2xl font-bold text-white">電影轉盤</h2>
           <button
             onClick={onClose}
             className="p-2 bg-gray-700 rounded-full transition-colors hover:bg-gray-600"
@@ -208,7 +236,7 @@ const WheelModal: React.FC<WheelModalProps> = ({ isOpen, onClose, onSpin, onMovi
           </button>
         </div>
 
-        {/* 拉霸機門 */}
+        {/* 轉盤門 */}
         <div className="flex gap-4 mb-8">
           {[0, 1, 2].map(index => (
             <div
@@ -224,7 +252,9 @@ const WheelModal: React.FC<WheelModalProps> = ({ isOpen, onClose, onSpin, onMovi
               }}
             >
               <div className="transition-transform duration-1000 ease-in-out boxes">
-                <div className="flex justify-center items-center w-24 h-36 text-5xl box">❓</div>
+                <div className="flex flex-col justify-center items-center w-24 h-36 text-2xl bg-gray-200 rounded box">
+                  ❓
+                </div>
               </div>
             </div>
           ))}
@@ -244,7 +274,7 @@ const WheelModal: React.FC<WheelModalProps> = ({ isOpen, onClose, onSpin, onMovi
               }
             `}
           >
-            {isSpinning ? 'Spinning...' : 'Spin'}
+            {isSpinning ? '轉動中...' : '轉動'}
           </button>
 
           <button
@@ -259,7 +289,7 @@ const WheelModal: React.FC<WheelModalProps> = ({ isOpen, onClose, onSpin, onMovi
               }
             `}
           >
-            Reset
+            重置
           </button>
         </div>
 

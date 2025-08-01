@@ -1,11 +1,11 @@
-import { useCallback, useMemo, useState } from 'react';
-import type { MovieDetail, Credits, Videos, Reviews } from '@/types/tmdb';
-import { useWatchlistStore } from '@/stores/watchlistStore';
-import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
-import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline';
-import { Language } from '@/lib/enum/language';
 import TabNavigation from '@/components/common/TabNavigation';
-import { formatRuntime, formatDate } from '@/lib/utils/dateUtils';
+import { Language } from '@/lib/enum/language';
+import { formatDate, formatRuntime } from '@/lib/utils/dateUtils';
+import { useWatchlistStore } from '@/stores/watchlistStore';
+import type { Credits, MovieDetail, Reviews, Videos } from '@/types/tmdb';
+import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
+import { useCallback, useMemo } from 'react';
 
 interface MovieDetailProps {
   movie: MovieDetail;
@@ -48,8 +48,8 @@ const MovieDetail = ({ movie, credits, videos, reviews }: MovieDetailProps) => {
               <button className="text-sm text-blue-400 hover:text-blue-300">查看全部</button>
             </div>
             <div className="flex overflow-x-auto gap-4 pb-4">
-              {credits.cast.slice(0, 6).map(actor => (
-                <div key={actor.id} className="flex-shrink-0 w-32 text-center">
+              {credits.cast.slice(0, 6).map((actor, index) => (
+                <div key={`${actor.id}-${index}`} className="flex-shrink-0 w-32 text-center">
                   <div className="overflow-hidden mb-3 w-32 h-40 bg-gray-300 rounded-lg">
                     {actor.profile_path ? (
                       <img
@@ -89,8 +89,8 @@ const MovieDetail = ({ movie, credits, videos, reviews }: MovieDetailProps) => {
               {videos.results
                 .filter(video => video.site === 'YouTube' && video.type === 'Trailer')
                 .slice(0, 6)
-                .map(video => (
-                  <div key={video.id} className="relative">
+                .map((video, index) => (
+                  <div key={`${video.id}-${index}`} className="relative">
                     <iframe
                       src={`https://www.youtube.com/embed/${video.key}`}
                       title={video.name}
@@ -139,8 +139,11 @@ const MovieDetail = ({ movie, credits, videos, reviews }: MovieDetailProps) => {
           <div className="p-6 bg-gray-800 rounded-lg shadow-md">
             <h3 className="mb-4 text-xl font-semibold text-white">評論</h3>
             <div className="space-y-4">
-              {reviews.results.slice(0, 5).map(review => (
-                <div key={review.id} className="pb-4 border-b border-gray-600 last:border-b-0">
+              {reviews.results.slice(0, 5).map((review, index) => (
+                <div
+                  key={`${review.id}-${index}`}
+                  className="pb-4 border-b border-gray-600 last:border-b-0"
+                >
                   <div className="flex justify-between items-center mb-2">
                     <h4 className="font-semibold text-white">{review.author}</h4>
                     {review.rating && (
@@ -274,7 +277,10 @@ const MovieDetail = ({ movie, credits, videos, reviews }: MovieDetailProps) => {
                       </h4>
                       <div className="flex flex-wrap gap-1 sm:gap-2">
                         {getDirectors().map((director, index) => (
-                          <span key={director.id} className="text-xs text-white sm:text-sm">
+                          <span
+                            key={`${director.id}-${director.job}`}
+                            className="text-xs text-white sm:text-sm"
+                          >
                             {director.name}
                             {index < getDirectors().length - 1 ? '、' : ''}
                           </span>
@@ -293,7 +299,10 @@ const MovieDetail = ({ movie, credits, videos, reviews }: MovieDetailProps) => {
                         {getWriters()
                           .slice(0, 3)
                           .map((writer, index) => (
-                            <span key={writer.id} className="text-xs text-white sm:text-sm">
+                            <span
+                              key={`${writer.id}-${writer.job}`}
+                              className="text-xs text-white sm:text-sm"
+                            >
                               {writer.name}
                               {index < Math.min(getWriters().length, 3) - 1 ? '、' : ''}
                             </span>
