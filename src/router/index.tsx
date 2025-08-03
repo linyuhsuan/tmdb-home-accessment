@@ -1,11 +1,11 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createHashRouter } from 'react-router-dom';
 import MovieListPage from '@/pages/MovieListPage';
 import MovieDetailPage from '@/pages/MovieDetailPage';
 import WatchlistPage from '@/pages/WatchlistPage';
 import MovieCategoriesPage from '@/pages/MovieCategoriesPage';
 import Layout from '@/components/Layout/Layout';
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: '/',
     element: <Layout />,

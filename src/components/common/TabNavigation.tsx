@@ -17,7 +17,6 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
   tabs,
   defaultTab,
   onTabChange,
-  className = '',
   children,
 }) => {
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id || '');

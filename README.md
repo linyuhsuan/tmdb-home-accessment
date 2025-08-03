@@ -31,8 +31,7 @@
 - **圖示**：Heroicons
 - **API**：TMDB (The Movie Database)
 - **Lint/格式化**：ESLint、Prettier
-- **測試**：Vitest + Testing Library
-- **Git Hooks**：Husky + lint-staged
+- **測試**: Playwright
 
 ## 專案結構
 

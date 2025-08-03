@@ -1,15 +1,15 @@
-import { useCallback, useState, useMemo } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { tmdbApiConfig } from '@/lib/api/apiConfig';
-import { useReactQueryFetch } from '@/hooks/useReactQueryFetch';
-import { tmdbApiRequest } from '@/lib/api/apiService';
-import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
-import ReactQueryHandler from '@/components/common/ReactQueryHandler';
-import { useQuery } from '@tanstack/react-query';
-import MovieFilter from '@/components/common/MovieFilter';
-import { SearchBar } from '@/components/common/SearchBar';
 import MovieCard from '@/components/common/MovieCard';
+import MovieFilter from '@/components/common/MovieFilter';
+import ReactQueryHandler from '@/components/common/ReactQueryHandler';
+import { SearchBar } from '@/components/common/SearchBar';
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { useReactQueryFetch } from '@/hooks/useReactQueryFetch';
+import { tmdbApiConfig } from '@/lib/api/apiConfig';
+import { tmdbApiRequest } from '@/lib/api/apiService';
 import { useWatchlistStore } from '@/stores/watchlistStore';
+import { useQuery } from '@tanstack/react-query';
+import { useCallback, useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 interface Movie {
   id: number;
@@ -101,15 +101,22 @@ const MovieListPage: React.FC = () => {
   } = useReactQueryFetch<MoviesPage, Movie>({
     queryKey: ['movies-list', category, searchQuery],
     queryFn: getQueryFn,
+    getNextPageParam: (lastPage: MoviesPage) =>
+      lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined,
     initialPageParam: 1,
   });
 
-  // 根據篩選條件過濾和排序電影
+  // 使用 useMemo 來計算 displayData，避免狀態更新
+  const displayData = useMemo(() => {
+    return rawData || [];
+  }, [rawData]);
+
+  // 根據篩選條件過濾和排序電影 - 只在篩選條件改變時重新計算
   const filteredData = useMemo(() => {
-    if (!rawData) return [];
+    if (!displayData || displayData.length === 0) return [];
 
     // 先過濾
-    const filtered = rawData.filter(movie => {
+    const filtered = displayData.filter(movie => {
       // 如果有選擇電影類型，檢查電影是否包含任一選擇的類型
       if (filterOptions.genres.length > 0) {
         const hasMatchingGenre = movie.genre_ids.some(genreId =>
@@ -146,7 +153,7 @@ const MovieListPage: React.FC = () => {
     });
 
     return sorted;
-  }, [rawData, filterOptions.genres, filterOptions.sortBy]);
+  }, [displayData, filterOptions.genres, filterOptions.sortBy]);
 
   const handleMovieClick = useCallback(
     (movie: Movie) => {
@@ -177,12 +184,12 @@ const MovieListPage: React.FC = () => {
     console.log('filterOptions', newFilters);
   }, []);
 
-  // 使用 useInfiniteScroll hook
+  // 使用 useInfiniteScroll hook - 使用穩定的 hasData 判斷
   const { loadMoreRef } = useInfiniteScroll({
     onLoadMore: fetchNextPage,
     hasNextPage: hasNextPage || false,
     isLoading: isFetchingNextPage,
-    hasData: filteredData && filteredData.length > 0,
+    hasData: (displayData?.length || 0) > 0,
     rootMargin: '200px',
   });
 
@@ -224,7 +231,10 @@ const MovieListPage: React.FC = () => {
             />
           </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          <div
+            data-testid="movie-list"
+            className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
+          >
             {filteredData?.map((movie: Movie, index: number) => (
               <MovieCard
                 key={`${movie.id}-${index}`}

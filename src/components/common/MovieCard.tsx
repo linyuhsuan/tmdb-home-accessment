@@ -1,7 +1,7 @@
-import { Ref } from 'react';
+import { useAppear } from '@/hooks/useAppear';
 import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
-import { useAppear } from '@/hooks/useAppear';
+import { Ref } from 'react';
 
 const MovieCard = ({
   movie,
@@ -27,6 +27,7 @@ const MovieCard = ({
   const renderMovieCard = () => {
     return (
       <div
+        data-testid={`movie-card-${movie.id}`}
         className="flex overflow-hidden flex-col h-full bg-white rounded-lg border border-gray-100 shadow-md transition-all duration-300 cursor-pointer hover:shadow-lg hover:scale-105"
         onClick={handleClick}
       >
@@ -46,7 +47,12 @@ const MovieCard = ({
                 {movie.vote_average.toFixed(1)}
               </div>
               {/* 愛心 icon */}
-              <button onClick={handleHeartClick} className="p-2">
+              <button
+                data-testid={`heart-${movie.id}`}
+                data-liked={isLiked}
+                onClick={handleHeartClick}
+                className="p-2"
+              >
                 {isLiked ? (
                   <HeartSolid className="w-6 h-6 text-red-500 transition-colors" />
                 ) : (
@@ -59,7 +65,10 @@ const MovieCard = ({
 
         {/* 卡片內容 */}
         <div className="flex flex-col flex-1 p-3 min-h-0">
-          <h3 className="mb-1 text-sm font-bold leading-tight text-gray-900 line-clamp-2">
+          <h3
+            data-testid="movie-title"
+            className="mb-1 text-sm font-bold leading-tight text-gray-900 line-clamp-2"
+          >
             {movie.title}
           </h3>
           <p className="mb-2 text-xs text-gray-500">{movie.release_date}</p>

@@ -17,10 +17,6 @@ const ReactQueryHandler: React.FC<ReactQueryHandlerProps> = ({
   isError,
   error,
   children,
-  onRetry,
-  onBack,
-  errorTitle = '獲取數據失敗',
-  errorSubtitle,
   isPending,
 }) => {
   // 確認是否為 loading 狀態
@@ -31,10 +27,13 @@ const ReactQueryHandler: React.FC<ReactQueryHandlerProps> = ({
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div
+        data-testid="loading-indicator"
+        className="flex justify-center items-center min-h-screen"
+      >
         <div className="text-center">
           <div className="mx-auto mb-4 w-12 h-12 rounded-full border-b-2 border-blue-500 animate-spin"></div>
-          <p className="text-gray-600">載入中...</p>
+          <p className="text-white">載入中...</p>
         </div>
       </div>
     );
@@ -42,11 +41,11 @@ const ReactQueryHandler: React.FC<ReactQueryHandlerProps> = ({
 
   if (hasError) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div data-testid="error-state" className="flex justify-center items-center min-h-screen">
         <div className="text-center">
           <div className="mb-4 text-6xl text-red-500">⚠️</div>
-          <h2 className="mb-2 text-xl font-semibold text-gray-900">載入失敗</h2>
-          <p className="mb-4 text-gray-600">{error?.message || '發生未知錯誤'}</p>
+          <h2 className="mb-2 text-xl font-semibold text-white">載入失敗</h2>
+          <p className="mb-4 text-white">{error?.message || '發生未知錯誤'}</p>
         </div>
       </div>
     );

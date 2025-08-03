@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // lazy load
 export const useAppear = (params: { once?: boolean; threshold?: number; rootMargin?: string }) => {
@@ -18,7 +18,10 @@ export const useAppear = (params: { once?: boolean; threshold?: number; rootMarg
           }
         });
       },
-      { threshold, rootMargin },
+      {
+        threshold: threshold ?? 0,
+        rootMargin: rootMargin ?? '0px',
+      },
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
