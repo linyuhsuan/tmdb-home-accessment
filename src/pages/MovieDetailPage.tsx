@@ -1,10 +1,10 @@
-import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { tmdbApiRequest } from '@/lib/api/apiService';
-import { tmdbApiConfig } from '@/lib/api/apiConfig';
-import MovieDetail from '@/components/MovieDetail';
+import MovieDetail from '@/components/common/MovieDetail';
 import ReactQueryHandler from '@/components/common/ReactQueryHandler';
-import type { MovieDetail as MovieDetailType, Credits, Videos, Reviews } from '@/types/tmdb';
+import { tmdbApiConfig } from '@/lib/api/apiConfig';
+import { tmdbApiRequest } from '@/lib/api/apiService';
+import type { Credits, MovieDetail as MovieDetailType, Reviews, Videos } from '@/types/tmdb';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 
 function MovieDetailPage() {
   const { id } = useParams<{ id: string }>();

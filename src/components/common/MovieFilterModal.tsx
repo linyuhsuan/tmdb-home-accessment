@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import React, { useEffect } from 'react';
 
 interface MovieFilterModalProps {
   isOpen: boolean;
@@ -25,7 +25,7 @@ const MovieFilterModal = React.memo<MovieFilterModalProps>(
     if (!isOpen) return null;
 
     return (
-      <div className="fixed inset-0 z-50 bg-white lg:hidden">
+      <div data-testid="filter-modal" className="fixed inset-0 z-50 bg-white lg:hidden">
         {/* 選單標題 */}
         <div className="flex justify-between items-center p-4 border-b">
           <h2 className="text-xl font-semibold">全部篩選</h2>
@@ -43,6 +43,7 @@ const MovieFilterModal = React.memo<MovieFilterModalProps>(
 
           {/* 搜尋按鈕 */}
           <button
+            data-testid="apply-filter-button"
             onClick={() => {
               onSearch?.();
               onClose();

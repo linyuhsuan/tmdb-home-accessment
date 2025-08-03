@@ -1,5 +1,5 @@
-import React from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import React from 'react';
 import { useHorizontalScroll } from '../../hooks/useHorizontalScroll';
 
 interface TimelineScrollProps {
@@ -8,15 +8,11 @@ interface TimelineScrollProps {
   scrollDistance?: number;
 }
 
-const TimelineScroll: React.FC<TimelineScrollProps> = ({
-  children,
-  className = '',
-  scrollDistance = 300,
-}) => {
+const TimelineScroll: React.FC<TimelineScrollProps> = ({ children, scrollDistance = 300 }) => {
   const { scrollContainerRef, scrollLeft, scrollRight } = useHorizontalScroll(scrollDistance);
 
   return (
-    <div className={`relative ${className}`}>
+    <div className="relative">
       {/* 左滾動按鈕 */}
       <button
         onClick={scrollLeft}

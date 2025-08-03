@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { FunnelIcon } from '@heroicons/react/24/outline';
 import MovieFilterModal from '@/components/common/MovieFilterModal';
+import { FunnelIcon } from '@heroicons/react/24/outline';
+import React, { useEffect, useState } from 'react';
 
 interface Genre {
   id: number;
@@ -87,6 +87,7 @@ const MovieFilter: React.FC<MovieFilterProps> = ({ genres, filterOptions, onFilt
       <>
         {/* 全部類型 tag */}
         <button
+          data-testid="clear-filter-button"
           onClick={handleClearAll}
           className={`px-3 py-1 text-sm font-medium rounded-full border transition-colors ${getButtonClasses(isAllSelected)}`}
         >
@@ -94,9 +95,10 @@ const MovieFilter: React.FC<MovieFilterProps> = ({ genres, filterOptions, onFilt
         </button>
 
         {/* 電影類型 tags */}
-        {genres.map(genre => (
+        {genres?.map(genre => (
           <button
             key={genre.id}
+            data-testid={`genre-checkbox-${genre.id}`}
             onClick={() => handleGenreToggle(genre.id)}
             className={`px-3 py-1 text-sm font-medium rounded-full border transition-colors ${getButtonClasses(isSelected(genre.id))}`}
           >
@@ -121,6 +123,7 @@ const MovieFilter: React.FC<MovieFilterProps> = ({ genres, filterOptions, onFilt
 
     return (
       <select
+        data-testid="sort-select"
         value={currentSortBy}
         onChange={e => handleSortChange(e.target.value)}
         className={getSelectClasses()}
@@ -139,6 +142,7 @@ const MovieFilter: React.FC<MovieFilterProps> = ({ genres, filterOptions, onFilt
       {/* 篩選按鈕 - 只在手機顯示 */}
       <div className="p-4 lg:hidden">
         <button
+          data-testid="filter-button"
           onClick={() => setIsFilterOpen(true)}
           className="flex gap-2 items-center px-3 py-2 text-sm text-white bg-blue-600 rounded-lg shadow-lg transition-colors hover:bg-blue-700"
         >
@@ -187,6 +191,7 @@ const MovieFilter: React.FC<MovieFilterProps> = ({ genres, filterOptions, onFilt
 
           {/* 搜尋按鈕 */}
           <button
+            data-testid="filter-search-button"
             onClick={handleSearch}
             className="px-4 py-2 mt-4 w-full text-sm font-medium text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700"
           >
@@ -198,4 +203,4 @@ const MovieFilter: React.FC<MovieFilterProps> = ({ genres, filterOptions, onFilt
   );
 };
 
-export default MovieFilter;
+export default React.memo(MovieFilter);

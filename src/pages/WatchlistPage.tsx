@@ -1,16 +1,14 @@
-import { useNavigate } from 'react-router-dom';
-import { useWatchlistStore } from '@/stores/watchlistStore';
 import MovieCard from '@/components/common/MovieCard';
-import { PopularMovie } from '@/types/tmdb';
-import { useState } from 'react';
-import { FunnelIcon } from '@heroicons/react/24/outline';
-import { SparklesIcon } from '@heroicons/react/24/outline';
 import WheelModal from '@/components/common/WheelModal';
+import { useWatchlistStore } from '@/stores/watchlistStore';
+import { PopularMovie } from '@/types/tmdb';
+import { SparklesIcon } from '@heroicons/react/24/outline';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function WatchlistPage() {
   const { watchlist, getWatchlistCount, removeFromWatchlist } = useWatchlistStore();
   const navigate = useNavigate();
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isWheelOpen, setIsWheelOpen] = useState(false);
 
   return (

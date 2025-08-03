@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
 import { useSearchKeys } from '@/hooks/useSearchKeys'; // 確保路徑正確
+import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * @interface SearchBarProps
@@ -105,6 +105,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     <div className="relative w-full max-w-md" ref={searchBarRef}>
       <div className="relative">
         <input
+          data-testid="search-input"
           type="text"
           value={query}
           onChange={e => setQuery(e.target.value)}
