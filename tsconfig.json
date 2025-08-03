@@ -19,7 +19,7 @@
     },
     "baseUrl": "."
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "vitest.config.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
   "exclude": ["node_modules"],
   "types": ["vitest/globals", "node"]
 }
